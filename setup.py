@@ -4,7 +4,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(name='Web3Scout',
-      version='0.0.2',
+      version='0.0.3',
       description='Python library for Web3 surveillance',
       long_description=long_description,
       long_description_content_type="text/markdown",

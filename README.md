@@ -13,7 +13,7 @@ or
 ## Uni V2 Swap Events (Polygon) Example
 
 ```
-from pachira import *
+from web3scout import *
 
 abi = ABILoad(Platform.SUSHI, JSONContract.UniswapV2Pair)
 connect = ConnectW3(Net.POLYGON)
@@ -95,7 +95,7 @@ dict_events
 ## Uni V3 Swap Events (Polygon) Example
 
 ```
-from pachira import *
+from web3scout import *
 
 abi = ABILoad(Platform.UNIV3, JSONContract.UniswapV3Pool)
 connect = ConnectW3(Net.POLYGON)

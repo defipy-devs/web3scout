@@ -1,3 +1,10 @@
+# This file contains code adapted from web3-ethereum-defi (https://github.com/Kartograf/web3-ethereum-defi)
+# Licensed under the MIT License.
+# Original copyright (c) 2023 Kartograf contributors.
+
+# Additional modifications by Ian Moore, 2023–2025
+# Licensed under the Apache License, Version 2.0
+
 """In-house filter implementation.
 
 Wrap low-level JSON-RPC filters with more manageable Python code.

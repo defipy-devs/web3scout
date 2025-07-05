@@ -1,12 +1,9 @@
-"""ABI loading from the precompiled bundle.
+# This file contains code adapted from web3-ethereum-defi (https://github.com/Kartograf/web3-ethereum-defi)
+# Licensed under the MIT License.
+# Original copyright (c) 2023 Kartograf contributors.
 
-Provides functions to load ABI files and construct :py:class:`web3.contract.Contract` types.
-The results are cached for the speedup.
-
-We also provide some helper functions to deal with ABI encode/decode.
-
-`See Github for available contracts ABI files <https://github.com/tradingstrategy-ai/web3-ethereum-defi/tree/master/eth_defi/abi>`_.
-"""
+# Additional modifications by Ian Moore, 2023–2025
+# Licensed under the Apache License, Version 2.0
 
 import json
 import re

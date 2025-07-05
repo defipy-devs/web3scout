@@ -1,4 +1,4 @@
-# Web3Scout: Python library for Web3 surveillance
+# Web3Scout: Onchain Event Framework for DeFiPy
 
 ## Installation 
 ```

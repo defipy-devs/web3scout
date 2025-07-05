@@ -158,3 +158,11 @@ dict_events
 ## Uniswap V3: Polygon
 
 * Events (ie, Swap, Mint, Burn, Create): see [notebook](https://github.com/defipy-devs/web3scout/blob/main/notebook/univ3/test_univ3_events.ipynb)
+
+
+
+## License
+Web3Scout is licensed under the Apache License, Version 2.0.  
+See [LICENSE](./LICENSE) and [NOTICE](./NOTICE) for details.  
+Portions of this project may include code from third-party projects under compatible open-source licenses.
+

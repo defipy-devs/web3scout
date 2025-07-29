@@ -33,6 +33,8 @@ class RPCEnum:
             case NetsEnum.POLYGON:
                 select_rpc = 'https://polygon-rpc.com'
             case NetsEnum.LOCALHOST:
-                select_rpc = 'http://127.0.0.1:8545'                
+                select_rpc = 'http://127.0.0.1:8545'  
+            case _: 
+                select_rpc = net 
            
         return select_rpc 

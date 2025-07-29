@@ -16,6 +16,8 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class PlatformsEnum:
+    AGNOSTIC: str = "agnostic"
     SUSHI: str = "sushi"
     LOCAL: str = "local"
     UNIV3: str = "uniswap_v3"
+    ERC: str = "erc"

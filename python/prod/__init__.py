@@ -25,6 +25,7 @@ from .contract.deploy import Deploy
 from .contract.view import ViewContract
 from .uniswap_v2.fetch_pair_details import FetchPairDetails
 from .token.token import Token
+from .token.fetch.fetch_token import FetchToken
 from .utils.connect import ConnectW3
 from .enums.event_type_enum import EventTypeEnum as EventType
 from .enums.init_event_enum import InitEventEnum as InitEvent

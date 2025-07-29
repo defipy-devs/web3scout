@@ -32,6 +32,7 @@ setup(name='Web3Scout',
             "web3scout.data",
             "web3scout.enums",
             "web3scout.token",
+            "web3scout.token.fetch",
             "web3scout.contract",
             "web3scout.uniswap_v2"
         ],
@@ -43,7 +44,9 @@ setup(name='Web3Scout',
                           'eth_utils', 
                           'web3-ethereum-defi',
                           'hexbytes', 
-                          'pandas'],
+                          'pandas',
+                          'defipy >= 1.0.8'
+                         ],      
         include_package_data=True,
         zip_safe=False,
     )

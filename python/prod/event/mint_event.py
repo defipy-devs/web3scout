@@ -106,5 +106,6 @@ class MintEvent(Event):
 
         return event_record   
     
-    def filter(self, contract, addr = None):
-        return Filter.create_filter(address=addr, event_types=[contract.events.Mint])
+    def filter(self, contract, addr = None, fromBlock = None, toBlock = None):
+        event_filt = contract.events.Mint.create_filter(fromBlock=fromBlock, toBlock=toBlock)
+        return event_filt

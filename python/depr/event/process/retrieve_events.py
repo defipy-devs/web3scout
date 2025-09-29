@@ -11,7 +11,6 @@ from ...enums.init_event_enum import InitEventEnum as InitEvent
 from ...utils.connect import ConnectW3
 from ..event import Event
 from ..tools.log_result import LogResult
-from ..tools.conversion import Conversion
 from ..tools.rpc_reorganization_monitor import JSONRPCReorganizationMonitor
 from .read_events import ReadEvents
 import pandas as pd
@@ -28,24 +27,32 @@ class RetrieveEvents:
     
     def apply(self, event_type, address = None, start_block = None, end_block = None):
 
-        assert self.__connect.is_connect(), 'WEB3SCOUT Event Reader: NOT_CONNECTED'
-        assert address != None, 'WEB3SCOUT Event Reader: NO_ADDRESS'
+        assert self.__connect.is_connect(), 'PACHIRA Event Reader: NOT_CONNECTED'
 
         self.__contract = self.retrieve_contract(address)
         event = InitEvent().apply(self.__connect, event_type)
         read_events = self.gen_read_events(event, start_block, end_block)
-        return self.to_dict(read_events) 
+
+        if(self.__contract.address == None):
+            processed_events = set()
+            result_events = {}
+            evt: LogResult
+            for k, evt in enumerate(read_events):
+                record_event = event.record(evt, self.__abi)
+                key = evt["blockHash"] + evt["transactionHash"] + evt["logIndex"] 
+                result_events[k] = record_event
+                if key not in processed_events:
+                    if(self.__verbose): print(f"{event_type} at block:{evt['blockNumber']:,} tx:{evt['transactionHash']}")
+                    processed_events.add(key)
+            else:
+                if(self.__verbose): print(".")
+        else:            
+            result_events = read_events
+            
+        return result_events 
 
     def get_contract(self):
         return self.__contract
-
-    def to_dict(self, read_events = {}):
-        
-        dict_events = {}
-        for k, evt in enumerate(read_events):
-            evt_record = self.reorg_event_record(evt)
-            dict_events[k] = evt_record
-        return dict_events    
     
     def to_dataframe(self, dict_events):
         return pd.DataFrame.from_dict(dict_events, orient='index')
@@ -53,21 +60,14 @@ class RetrieveEvents:
     def gen_read_events(self, event, start_block = None, end_block = None):
         s_block = 1 if start_block == None else start_block
         e_block = self.latest_block() if end_block == None else end_block
-        event_filt = event.filter(self.__contract, fromBlock=s_block, toBlock=e_block)
-        read_events = event_filt.get_all_entries() 
+
+        if(self.__contract.address == None):
+            event_filt = event.filter(self.__contract)
+            read_events = ReadEvents().apply(self.__w3, start_block=s_block, end_block=e_block, filter=event_filt)   
+        else:
+            event_filt = event.filter(self.__contract, fromBlock=s_block, toBlock=e_block)
+            read_events = event_filt.get_all_entries() 
         return read_events
-
-    def reorg_event_record(self,evt):
-        event_fields = ['blockNumber','event','address','blockHash','logIndex','transactionHash','transactionIndex','args']
-        event_record = {}
-        for field in event_fields:
-
-            if(field == 'blockHash' or field == 'transactionHash'):
-                event_record[field] = Conversion().convert_hex_bytes_to_string(evt[field])
-            else:
-                event_record[field] = evt[field]
-                
-        return event_record
 
     def retrieve_contract(self, address):
         chksum_addr = address if address == None else self.__w3.to_checksum_address(address)

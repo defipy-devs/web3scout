@@ -1,4 +1,5 @@
 include python/prod/configs/agnostic/UniswapV2Pair.json
+include python/prod/configs/agnostic/UniswapV3Pool.json
 include python/prod/configs/sushi/UniswapV2Pair.json
 include python/prod/configs/sushi/UniswapV2Router02.json
 include python/prod/configs/sushi/UniswapV2Factory.json

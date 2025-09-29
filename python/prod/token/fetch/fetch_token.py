@@ -31,6 +31,9 @@ class FetchToken:
         name = self.get_token_symbol(token_address)
         decimal = self.get_token_decimals(token_address)
         return ERC20(name, token_address, decimal)
+
+    def amt_to_decimal(self, tkn, amt):
+        return amt/(10**tkn.token_decimal)
         
     def get_erc20_abi(self, token_address):
         abi_obj = ABILoad(PlatformsEnum.ERC, JSONContractsEnum.ERC20)  # Load ABI here  

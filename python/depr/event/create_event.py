@@ -1,4 +1,4 @@
-## Copyright 2023–2025 Ian Moore
+# Copyright 2023–2025 Ian Moore
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,50 +14,51 @@
 
 from web3 import Web3
 from .event import Event
-from .tools.conversion import Conversion
-from ..uniswap_v2.fetch_pair_details import FetchPairDetails
 from ..data.filter import Filter
+from .tools.conversion import Conversion
+from ..token.token import Token
 from ..utils.connect import ConnectW3
 from ..enums.contracts_enum import JSONContractsEnum as JSONContracts
 
-
-class SyncEvent(Event):
+class CreateEvent(Event):
 
     def __init__(self, connect_w3: ConnectW3):
-        self.__connect_w3 = connect_w3  
-
+        self.__connect_w3 = connect_w3      
+                       
     def record(self, event, abi_load):
 
         event_record = {}
         contract_type = abi_load.get_contract_name()
-
+        
         match contract_type:
             case JSONContracts.IUniswapV2Pair:
                 event_record = self._uni_v2_record(event, abi_load)
             case JSONContracts.UniswapV2Pair:
                 event_record = self._uni_v2_record(event, abi_load)                
-            case JSONContracts.UniswapV3Pool:
+            case JSONContracts.UniswapV3Factory:
                 event_record = self._uni_v3_record(event, abi_load)                
            
-        return event_record    
-                     
+        return event_record
+
     def _uni_v2_record(self, event, abi_load):
 
-        topics = event["topics"]
-        arguments = Conversion().decode_data(event["data"])        
+        return {}   
+    
+    def _uni_v3_record(self, event, abi_load):
 
         chain_nm = self.__connect_w3.get_chain_name()
         contract_nm = abi_load.get_contract_name()
-        platform_nm = abi_load.get_platform_name()
+        platform_nm = abi_load.get_platform_name()        
 
+        event_signature, token0, token1, fee = event["topics"]
+        args = Conversion().decode_data(event["data"])
         w3 = self.__connect_w3.get_w3()
-        pair: PairDetails = FetchPairDetails().apply(w3, event['address'])
     
-        amt0 = Conversion().convert_int256_bytes_to_int(arguments[0]) 
-        amt1 = Conversion().convert_int256_bytes_to_int(arguments[1])  
-        amt0_human = amt0/(10**pair.token0.decimals)
-        amt1_human = amt1/(10**pair.token1.decimals)    
-    
+        token0_address = Conversion().convert_uint256_string_to_address(token0)
+        token1_address = Conversion().convert_uint256_string_to_address(token1)
+        token0 = Token().fetch_erc20_details(w3, token0_address, raise_on_error=False)
+        token1 = Token().fetch_erc20_details(w3, token1_address, raise_on_error=False)
+        
         event_record = {}
         event_record['chain'] = chain_nm
         event_record['contract'] = contract_nm.lower()
@@ -68,25 +69,17 @@ class SyncEvent(Event):
         event_record['blk_num'] = event["blockNumber"]
         event_record['timestamp'] = event["timestamp"]
         event_record['details'] = {}
-        event_record['details']['web3_type'] = event['event']
-        event_record['details']['token0'] = pair.token0.address
-        event_record['details']['token1'] = pair.token1.address
-        event_record['details']['token0_symbol'] = pair.token0.symbol
-        event_record['details']['token1_symbol'] = pair.token1.symbol 
-        event_record['details']['token0_decimal'] = pair.token0.decimals
-        event_record['details']['token1_decimal'] = pair.token1.decimals        
-        event_record['details']['amount0'] = amt0
-        event_record['details']['amount1'] = amt1
-        event_record['details']['price'] = amt1_human/amt0_human
+        event_record['details']['web3_type'] = event["event"]
+        event_record['details']['token0'] = token0_address
+        event_record['details']['token1'] = token1_address
+        event_record['details']['token0_symbol'] = token0.symbol
+        event_record['details']['token1_symbol'] = token1.symbol  
+        event_record['details']['fee'] = Conversion().convert_uint256_string_to_int(fee)         
 
-        return event_record
+        return event_record   
+    
 
-    def _uni_v3_record(self, event, abi_load):
-
-        event_record = {}
-
-        return event_record     
+ 
      
-    def filter(self, contract, addr = None, fromBlock = None, toBlock = None):
-        event_filt = contract.events.Sync.create_filter(fromBlock=fromBlock, toBlock=toBlock)
-        return event_filt
+    def filter(self, contract, addr = None):
+        return Filter.create_filter(address=addr, event_types=[contract.events.PoolCreated])

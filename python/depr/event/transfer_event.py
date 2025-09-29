@@ -20,10 +20,10 @@ from ..utils.connect import ConnectW3
 from ..enums.contracts_enum import JSONContractsEnum as JSONContracts
 import math
 
-class BurnEvent(Event):
+class TransferEvent(Event):
 
     def __init__(self, connect_w3: ConnectW3):
-        self.__connect_w3 = connect_w3   
+        self.__connect_w3 = connect_w3 
 
     def record(self, event, abi_load):
 
@@ -39,7 +39,7 @@ class BurnEvent(Event):
                 event_record = self._uni_v3_record(event, abi_load)                
            
         return event_record    
-                        
+                       
     def _uni_v2_record(self, event, abi_load):
 
         topics = event["topics"]
@@ -64,47 +64,17 @@ class BurnEvent(Event):
         event_record['details']['token1'] = Conversion().convert_uint256_hex_string_to_address(topics[2])
     
         if(len(arguments) >= 1):
-            event_record['details']['amount0'] = Conversion().convert_int256_bytes_to_int(arguments[0])
+            event_record['details']['transfer_value'] = Conversion().convert_int256_bytes_to_int(arguments[0])
         else:
-            event_record['details']['amount0'] = math.nan
-    
-        if(len(arguments) >= 2):
-            event_record['details']['amount1'] = Conversion().convert_int256_bytes_to_int(arguments[1])
-        else:
-            event_record['details']['amount1'] = math.nan   
+            event_record['details']['transfer_value'] = math.nan
 
         return event_record
 
     def _uni_v3_record(self, event, abi_load):
 
-        event_signature, owner, tick_lower, tick_upper = event["topics"]
-        args = Conversion().decode_data(event["data"])
-
-        chain_nm = self.__connect_w3.get_chain_name()
-        contract_nm = abi_load.get_contract_name()
-        platform_nm = abi_load.get_platform_name()        
-        
         event_record = {}
-        event_record['chain'] = chain_nm
-        event_record['contract'] = contract_nm.lower()
-        event_record['type'] = event["event"].event_name.lower()
-        event_record['platform'] = platform_nm
-        event_record['address'] = event["address"]
-        event_record['tx_hash'] = event["transactionHash"]
-        event_record['blk_num'] = event["blockNumber"]
-        event_record['timestamp'] = event["timestamp"]
-        event_record['details'] = {}
-        event_record['details']['web3_type'] = event["event"]
-        event_record['details']['owner'] = Conversion().convert_uint256_hex_string_to_address(owner)
-        event_record['details']['tick_lower'] = Conversion().convert_uint256_string_to_int(tick_lower, signed=True)
-        event_record['details']['tick_upper'] = Conversion().convert_uint256_string_to_int(tick_upper, signed=True)    
-        if(len(args) == 4):
-            event_record['details']['liquidity_amount'] = Conversion().convert_int256_bytes_to_int(args[1])
-            event_record['details']['amount0'] = Conversion().convert_int256_bytes_to_int(args[2])
-            event_record['details']['amount1'] = Conversion().convert_int256_bytes_to_int(args[3])
 
-        return event_record      
-     
-    def filter(self, contract, addr = None, fromBlock = None, toBlock = None):
-        event_filt = contract.events.Burn.create_filter(fromBlock=fromBlock, toBlock=toBlock)
-        return event_filt
+        return event_record    
+        
+    def filter(self, contract, addr = None):
+        return Filter.create_filter(address=addr, event_types=[contract.events.Transfer])

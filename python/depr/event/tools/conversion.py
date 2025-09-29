@@ -46,23 +46,6 @@ class Conversion:
         return Web3.to_checksum_address(raw[12:])
 
 
-    def convert_hex_bytes_to_string(self, raw: bytes | HexBytes) -> str:
-        """Convert hex bytes from log data to string.
-    
-        :param hex:
-            Hex string byte blob
-    
-        :return:
-            Checksummed Ethereum address
-        """
-        if isinstance(raw, HexBytes):
-            return raw.hex()  # or data.decode() if it's UTF-8 encoded
-        elif isinstance(data, bytes):
-            return raw.hex()
-        elif isinstance(data, str):
-            return raw
-        else:
-            raise TypeError("Unsupported data type")
     
     
     def convert_uint256_hex_string_to_address(self, hex: str) -> ChecksumAddress:

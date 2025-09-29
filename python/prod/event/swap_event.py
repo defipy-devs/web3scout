@@ -103,6 +103,7 @@ class SwapEvent(Event):
         val1 = Conversion().convert_int256_bytes_to_int(val, signed=False) 
         val2 = Conversion().convert_int256_bytes_to_int(val, signed=True)
         return val1 != val2        
-     
-    def filter(self, contract, addr = None):
-        return Filter.create_filter(address=addr, event_types=[contract.events.Swap])
+
+    def filter(self, contract, addr = None, fromBlock = None, toBlock = None):
+        event_filt = contract.events.Swap.create_filter(fromBlock=fromBlock, toBlock=toBlock)
+        return event_filt

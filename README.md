@@ -1,5 +1,7 @@
 # Web3Scout: Onchain Event Framework for DeFiPy
 
+🔗 SPDX-Anchor: [anchorregistry.ai/AR-2026-5RJKqw5](https://anchorregistry.ai/AR-2026-5RJKqw5)
+
 ## Installation 
 ```
 > git clone https://github.com/defipy-devs/web3scout

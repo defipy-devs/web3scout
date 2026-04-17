@@ -17,7 +17,7 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-from eth_defi.event_reader.block_header import BlockHeader, Timestamp
+from .block_header import BlockHeader, Timestamp
 
 @dataclass()
 class ReorganizationMonitor(ABC):

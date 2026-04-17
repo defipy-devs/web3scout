@@ -235,7 +235,7 @@ class ABILoad:
     
         if register_for_tracing:
             # TODO: Currently hack around circular imports, move functoins
-            from pachira.contract.deploy import Deploy
+            from ..contract.deploy import Deploy
     
             registered_contract = Deploy().get_registered_contract(web3, address)
             if registered_contract is None:

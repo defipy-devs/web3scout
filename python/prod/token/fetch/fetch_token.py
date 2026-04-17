@@ -65,9 +65,9 @@ class FetchToken:
             name = contract.functions.name().call()
             return name
         except Exception as e:
-            print(f"Error fetching symbol for {self.token_address}: {e}")
+            print(f"Error fetching name for {token_address}: {e}")
             return None
-    
+
     def get_token_supply(self, token_address):
         """Fetch the token symbol for a given ERC-20 token address."""
         # Minimal ERC-20 ABI for symbol()
@@ -79,7 +79,7 @@ class FetchToken:
             supply = contract.functions.totalSupply().call()
             return supply
         except Exception as e:
-            print(f"Error fetching symbol for {self.token_address}: {e}")
+            print(f"Error fetching supply for {token_address}: {e}")
             return None
     
     def get_token_decimals(self, token_address):

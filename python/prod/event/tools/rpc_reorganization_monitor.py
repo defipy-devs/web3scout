@@ -12,7 +12,7 @@ from hexbytes import HexBytes
 from typing import Iterable
 from ...data.reorganization_monitor import ReorganizationMonitor
 
-from eth_defi.event_reader.block_header import BlockHeader
+from ...data.block_header import BlockHeader
 
 logger = logging.getLogger(__name__)
 

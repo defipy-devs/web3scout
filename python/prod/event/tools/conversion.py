@@ -57,9 +57,9 @@ class Conversion:
         """
         if isinstance(raw, HexBytes):
             return raw.hex()  # or data.decode() if it's UTF-8 encoded
-        elif isinstance(data, bytes):
+        elif isinstance(raw, bytes):
             return raw.hex()
-        elif isinstance(data, str):
+        elif isinstance(raw, str):
             return raw
         else:
             raise TypeError("Unsupported data type")

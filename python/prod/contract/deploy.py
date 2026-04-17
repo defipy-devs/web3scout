@@ -76,7 +76,7 @@ class Deploy():
     
         """
         if isinstance(contract, str):
-            Contract = ABILoading().get_contract(web3, contract)
+            Contract = ABILoad().get_contract(web3, contract)
     
             # Used in trace.py
             contract_name = contract.replace(".json", "")

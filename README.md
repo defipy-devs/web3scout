@@ -163,6 +163,31 @@ dict_events
 
 
 
+## Testing
+
+Run the full test suite from the repo root:
+
+```
+> python -m pytest tests/ -v
+```
+
+Tests cover bug fixes and regression checks across:
+
+- **conversion** — hex/bytes string conversion
+- **fetch_token** — error handling in token metadata fetches
+- **deploy** — contract deployment class references
+- **abi_load** — import path corrections
+- **reorg_monitor** — chain reorganization monitoring imports
+- **block_header** — BlockHeader dataclass (extracted from eth_defi)
+- **token** — ERC-20 token creation
+- **base_utils** — port scanning utilities
+
+### Requirements
+
+```
+> pip install pytest
+```
+
 ## License
 Web3Scout is licensed under the Apache License, Version 2.0.  
 See [LICENSE](./LICENSE) and [NOTICE](./NOTICE) for details.  

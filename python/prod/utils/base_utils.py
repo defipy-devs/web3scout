@@ -78,7 +78,7 @@ class BaseUtils():
         for attempt in range(0, max_attempt):
             random_port = random.randrange(start=min_port, stop=max_port)
             logger.info("Attempting to allocate port %d to Anvil", random_port)
-            if not is_localhost_port_listening(random_port, "127.0.0.1"):
+            if not self.is_localhost_port_listening(random_port, "127.0.0.1"):
                 return random_port
     
         raise RuntimeError(f"Could not open a port with a spec: {min_port} - {max_port}, {max_attempt} attempts")
@@ -143,7 +143,7 @@ class BaseUtils():
             assert check_port is not None, "Give check_port to block the execution"
             deadline = time.time() + 30
             while time.time() < deadline:
-                if not is_localhost_port_listening(check_port):
+                if not self.is_localhost_port_listening(check_port):
                     # Port released, assume Anvil/Ganache is gone
                     return stdout, stderr
     

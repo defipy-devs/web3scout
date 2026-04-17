@@ -16,6 +16,7 @@ from eth_typing import HexAddress
 from eth_tester.exceptions import TransactionFailed
 from ..data.token_details import TokenDetails
 from ..abi.abi_load import ABILoad
+from ..contract.deploy import Deploy
 from ..utils.base_utils import BaseUtils
 
 _call_missing_exceptions = (TransactionFailed, BadFunctionCallOutput, ValueError, ContractLogicError)
@@ -75,7 +76,7 @@ class Token:
         :return:
             Instance to a deployed Web3 contract.
         """
-        return deploy_contract(web3, "ERC20MockDecimals.json", deployer, name, symbol, supply, decimals)
+        return Deploy().deploy_contract(web3, "ERC20MockDecimals.json", deployer, name, symbol, supply, decimals)
     
     
     def fetch_erc20_details(

@@ -1,6 +1,7 @@
 {
   "abi": [
-    {"inputs": [{"internalType": "bytes32", "name": "poolId", "type": "bytes32"}], "name": "getPoolTokens", "outputs": [{"internalType": "contract IERC20[]", "name": "tokens", "type": "address[]"}, {"internalType": "uint256[]", "name": "balances", "type": "uint256[]"}, {"internalType": "uint256", "name": "lastChangeBlock", "type": "uint256"}], "stateMutability": "view", "type": "function"}
+    {"inputs": [{"internalType": "bytes32", "name": "poolId", "type": "bytes32"}], "name": "getPoolTokens", "outputs": [{"internalType": "contract IERC20[]", "name": "tokens", "type": "address[]"}, {"internalType": "uint256[]", "name": "balances", "type": "uint256[]"}, {"internalType": "uint256", "name": "lastChangeBlock", "type": "uint256"}], "stateMutability": "view", "type": "function"},
+    {"anonymous": false, "inputs": [{"indexed": true, "internalType": "bytes32", "name": "poolId", "type": "bytes32"}, {"indexed": true, "internalType": "contract IERC20", "name": "tokenIn", "type": "address"}, {"indexed": true, "internalType": "contract IERC20", "name": "tokenOut", "type": "address"}, {"indexed": false, "internalType": "uint256", "name": "amountIn", "type": "uint256"}, {"indexed": false, "internalType": "uint256", "name": "amountOut", "type": "uint256"}], "name": "Swap", "type": "event"}
   ],
   "bytecode": ""
 }

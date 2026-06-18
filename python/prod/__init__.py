@@ -33,5 +33,6 @@ from .enums.nets_enum import NetsEnum as Net
 from .enums.rpcs_enum import RPCEnum as RPC
 from .enums.platforms_enum import PlatformsEnum as Platform
 from .enums.contracts_enum import JSONContractsEnum as JSONContract
+from .enums.addresses_enum import AddressesEnum as Addr
 
 

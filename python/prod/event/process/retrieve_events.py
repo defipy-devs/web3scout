@@ -28,7 +28,11 @@ class RetrieveEvents:
     
     def apply(self, event_type, address = None, start_block = None, end_block = None, argument_filters = None):
 
-        assert self.__connect.is_connect(), 'WEB3SCOUT Event Reader: NOT_CONNECTED'
+        # The w3 handle is built by ConnectW3.apply() at construction time, so
+        # don't re-ping the node on every apply() -- that extra round-trip flakes
+        # under provider rate-limiting. A genuinely unreachable node surfaces as a
+        # clear error from the get_logs read below.
+        assert self.__w3 is not None, 'WEB3SCOUT Event Reader: NOT_CONNECTED'
         assert address != None, 'WEB3SCOUT Event Reader: NO_ADDRESS'
 
         self.__contract = self.retrieve_contract(address)

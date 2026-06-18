@@ -153,6 +153,18 @@ dict_events
 ```
 
 
+## Protocol Coverage
+
+Beyond the Uniswap V2/V3 event examples above, Web3Scout bundles minimal, address-based read ABIs for additional protocols, resolvable through the same `ABILoad` interface:
+
+- **Balancer** — V2 `Vault` and `WeightedPool`:
+  `ABILoad(Platform.BALANCER, JSONContract.BalancerVault)` and
+  `ABILoad(Platform.BALANCER, JSONContract.BalancerWeightedPool)`
+- **Curve** — plain `StableSwap`:
+  `ABILoad(Platform.CURVE, JSONContract.CurveStableSwap)`
+
+These cover onchain state reads (pool tokens, balances, normalized weights, swap fee, amplification coefficient).
+
 ## Sushi Uniswap V2: Polygon 
 
 * Events (ie, Swap, Mint, Sync, Burn, Transfer): see [notebook](https://github.com/defipy-devs/web3scout/blob/main/notebook/univ2/test_univ2_events.ipynb)

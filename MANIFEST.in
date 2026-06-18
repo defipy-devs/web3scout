@@ -8,3 +8,6 @@ include python/prod/configs/uniswap_v3/UniswapV3Factory.json
 include python/prod/configs/erc/ERC20.json
 include python/prod/configs/erc/ERC20MockDecimals.json
 include python/prod/configs/ERC20MockDecimals.json
+include python/prod/configs/balancer/Vault.json
+include python/prod/configs/balancer/WeightedPool.json
+include python/prod/configs/curve/StableSwap.json

@@ -21,3 +21,5 @@ class PlatformsEnum:
     LOCAL: str = "local"
     UNIV3: str = "uniswap_v3"
     ERC: str = "erc"
+    BALANCER: str = "balancer"
+    CURVE: str = "curve"

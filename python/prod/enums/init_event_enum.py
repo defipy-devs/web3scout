@@ -20,6 +20,9 @@ from ..event.burn_event import BurnEvent
 from ..event.create_event import CreateEvent
 from ..event.transfer_event import TransferEvent
 from ..event.sync_event import SyncEvent
+from ..event.pool_balance_changed_event import PoolBalanceChangedEvent
+from ..event.add_liquidity_event import AddLiquidityEvent
+from ..event.remove_liquidity_event import RemoveLiquidityEvent
 
 DEFAULT_EVENT = EventType.MINT
 
@@ -38,7 +41,13 @@ class InitEventEnum:
             case EventType.TRANSFER:
                 event = TransferEvent(connect)     
             case EventType.CREATE:
-                event = CreateEvent(connect)                    
-                           
-           
-        return event 
+                event = CreateEvent(connect)
+            case EventType.POOL_BALANCE_CHANGED:
+                event = PoolBalanceChangedEvent(connect)
+            case EventType.ADD_LIQUIDITY:
+                event = AddLiquidityEvent(connect)
+            case EventType.REMOVE_LIQUIDITY:
+                event = RemoveLiquidityEvent(connect)
+
+
+        return event

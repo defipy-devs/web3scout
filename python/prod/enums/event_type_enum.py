@@ -21,6 +21,9 @@ class EventTypeEnum:
     SWAP: str = "swap"
     BURN: str = "burn"
     SYNC: str = "sync"
-    TRANSFER: str = "transfer" 
-    CREATE: str = "create" 
+    TRANSFER: str = "transfer"
+    CREATE: str = "create"
+    POOL_BALANCE_CHANGED: str = "pool_balance_changed"
+    ADD_LIQUIDITY: str = "add_liquidity"
+    REMOVE_LIQUIDITY: str = "remove_liquidity"
 

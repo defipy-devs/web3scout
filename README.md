@@ -184,6 +184,82 @@ Beyond the Uniswap V2/V3 event examples above, Web3Scout bundles minimal, addres
 
 These cover onchain state reads (pool tokens, balances, normalized weights, swap fee, amplification coefficient).
 
+## Balancer Pool State (Ethereum) Example
+
+The Balancer ABIs are read ABIs for onchain state. `ViewContract` reads every
+zero-input getter on a pool in a single call; parameterized calls (such as the
+Vault's `getPoolTokens`) use the contract proxy from `ABILoad(...).apply(w3, address)`.
+
+```
+from web3scout import *
+
+connect = ConnectW3("https://eth.llamarpc.com")   # any Ethereum mainnet RPC
+connect.apply()
+w3 = connect.get_w3()
+
+# Balancer V2 80/20 BAL-WETH WeightedPool
+pool_addr = "0x5c6Ee304399DBdB9C8Ef030aB642B10820DB8F56"
+pool_abi  = ABILoad(Platform.BALANCER, JSONContract.BalancerWeightedPool)
+
+# Read all zero-input getters at once (verbose=True prints each)
+pool_state = ViewContract(connect, pool_abi, verbose=True).apply(pool_addr)
+```
+
+```javascript
+[0] getPoolId()             b'\x5c\x6e\xe3\x04...'                     # 32-byte pool id
+[1] getVault()              0xBA12222222228d8Ba445958a75a0704d566BF2C8
+[2] getNormalizedWeights()  [800000000000000000, 200000000000000000]  # 80% / 20% (1e18)
+[3] getSwapFeePercentage()  1000000000000000                          # 0.1% (1e18)
+[4] totalSupply()           24875403726528338391741
+```
+
+Pool token addresses and balances live on the Vault, keyed by the pool id:
+
+```
+vault = ABILoad(Platform.BALANCER, JSONContract.BalancerVault).apply(
+    w3, "0xBA12222222228d8Ba445958a75a0704d566BF2C8")   # canonical Balancer V2 Vault
+
+tokens, balances, last_change_block = vault.functions.getPoolTokens(
+    pool_state["getPoolId"]).call()
+```
+
+## Curve Pool State (Ethereum) Example
+
+`ViewContract` reads the zero-input getters (`A`, `fee`); the per-coin getters
+take an index, so those go through the contract proxy.
+
+```
+from web3scout import *
+
+connect = ConnectW3("https://eth.llamarpc.com")   # any Ethereum mainnet RPC
+connect.apply()
+w3 = connect.get_w3()
+
+# Curve 3pool (DAI / USDC / USDT)
+pool_addr = "0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7"
+abi = ABILoad(Platform.CURVE, JSONContract.CurveStableSwap)
+
+# Zero-input getters: A (amplification) and fee
+state = ViewContract(connect, abi, verbose=True).apply(pool_addr)
+
+# coins(i) / balances(i) take a coin index -> use the proxy
+pool = abi.apply(w3, pool_addr)
+for i in range(3):
+    print(pool.functions.coins(i).call(), pool.functions.balances(i).call())
+```
+
+```javascript
+[0] A()    2000
+[1] fee()  1000000              # 1e10-scaled
+
+0x6B175474E89094C44Da98b954EedeAC495271d0F 412300000000000000000000000   # DAI
+0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 398700000000                  # USDC
+0xdAC17F958D2ee523a2206206994597C13D831ec7 376500000000                  # USDT
+```
+
+> Output values above are illustrative; the addresses (Balancer V2 Vault, Curve
+> 3pool, DAI/USDC/USDT) are the canonical Ethereum mainnet contracts.
+
 ## Sushi Uniswap V2: Polygon 
 
 * Events (ie, Swap, Mint, Sync, Burn, Transfer): see [notebook](https://github.com/defipy-devs/web3scout/blob/main/notebook/univ2/test_univ2_events.ipynb)

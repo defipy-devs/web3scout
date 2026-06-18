@@ -33,7 +33,9 @@ Requires the supported stack (web3 6.x): `pip install .` into a Python 3.11 venv
 """
 
 import os
+import re
 import sys
+import time
 from collections import Counter
 from urllib.parse import urlparse
 
@@ -73,18 +75,30 @@ def get_rpc_url():
     return url
 
 
+_URL_RE = re.compile(r"(https?://[^/\s]+)/\S*")
+
+
+def redact(text):
+    """Strip the path (which may carry an API key) from any URL in the text,
+    keeping only scheme + host. RPC errors (e.g. HTTP 429) often embed the full
+    request URL, so without this an exception would leak the key."""
+    return _URL_RE.sub(r"\1/<redacted>", text)
+
+
 def run(tag, fetch, sample=1):
     """Run one apply() read and print a sample. Catches per-call failures
-    (e.g. a transient RPC rate-limit) so one flaky read doesn't abort the demo."""
+    (e.g. a transient RPC rate-limit / HTTP 429) so one flaky read doesn't abort
+    the demo; error text is redacted so the RPC URL/key never leaks."""
     try:
         events = fetch()
     except Exception as exc:
-        print(f"  {tag:22s} skipped — {type(exc).__name__}: {exc}")
+        print(f"  {tag:22s} skipped — {type(exc).__name__}: {redact(str(exc))}")
         return
     print(f"  {tag:22s} {len(events):4d} event(s)")
     for i in range(min(sample, len(events))):
         rec = events[i]
         print(f"       e.g. {rec['event']} @ blk {rec['blockNumber']}: {dict(rec['args'])}")
+    time.sleep(0.4)   # space reads out to be gentle on rate-limited endpoints
 
 
 def main():

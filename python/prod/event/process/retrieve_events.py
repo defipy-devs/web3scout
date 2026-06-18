@@ -26,15 +26,19 @@ class RetrieveEvents:
         self.__verbose = verbose
         self.__w3.middleware_onion.clear()
     
-    def apply(self, event_type, address = None, start_block = None, end_block = None):
+    def apply(self, event_type, address = None, start_block = None, end_block = None, argument_filters = None):
 
-        assert self.__connect.is_connect(), 'WEB3SCOUT Event Reader: NOT_CONNECTED'
+        # The w3 handle is built by ConnectW3.apply() at construction time, so
+        # don't re-ping the node on every apply() -- that extra round-trip flakes
+        # under provider rate-limiting. A genuinely unreachable node surfaces as a
+        # clear error from the get_logs read below.
+        assert self.__w3 is not None, 'WEB3SCOUT Event Reader: NOT_CONNECTED'
         assert address != None, 'WEB3SCOUT Event Reader: NO_ADDRESS'
 
         self.__contract = self.retrieve_contract(address)
         event = InitEvent().apply(self.__connect, event_type)
-        read_events = self.gen_read_events(event, start_block, end_block)
-        return self.to_dict(read_events) 
+        read_events = self.gen_read_events(event, start_block, end_block, argument_filters)
+        return self.to_dict(read_events)
 
     def get_contract(self):
         return self.__contract
@@ -50,11 +54,15 @@ class RetrieveEvents:
     def to_dataframe(self, dict_events):
         return pd.DataFrame.from_dict(dict_events, orient='index')
 
-    def gen_read_events(self, event, start_block = None, end_block = None):
+    def gen_read_events(self, event, start_block = None, end_block = None, argument_filters = None):
         s_block = 1 if start_block == None else start_block
         e_block = self.latest_block() if end_block == None else end_block
-        event_filt = event.filter(self.__contract, fromBlock=s_block, toBlock=e_block)
-        read_events = event_filt.get_all_entries() 
+        # event.filter() returns decoded logs via stateless eth_getLogs, which
+        # works on load-balanced public RPCs (unlike stateful eth_newFilter).
+        if argument_filters is not None:
+            read_events = event.filter(self.__contract, fromBlock=s_block, toBlock=e_block, argument_filters=argument_filters)
+        else:
+            read_events = event.filter(self.__contract, fromBlock=s_block, toBlock=e_block)
         return read_events
 
     def reorg_event_record(self,evt):

@@ -15,6 +15,9 @@ from .event.sync_event import SyncEvent
 from .event.transfer_event import TransferEvent
 from .event.create_event import CreateEvent
 from .event.burn_event import BurnEvent
+from .event.pool_balance_changed_event import PoolBalanceChangedEvent
+from .event.add_liquidity_event import AddLiquidityEvent
+from .event.remove_liquidity_event import RemoveLiquidityEvent
 from .data.filter import Filter
 from .data.reorganization_monitor import ReorganizationMonitor
 from .data.chain_reorganization_resolution import ChainReorganizationResolution
@@ -33,5 +36,6 @@ from .enums.nets_enum import NetsEnum as Net
 from .enums.rpcs_enum import RPCEnum as RPC
 from .enums.platforms_enum import PlatformsEnum as Platform
 from .enums.contracts_enum import JSONContractsEnum as JSONContract
+from .enums.addresses_enum import AddressesEnum as Addr
 
 

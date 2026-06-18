@@ -104,6 +104,12 @@ class SwapEvent(Event):
         val2 = Conversion().convert_int256_bytes_to_int(val, signed=True)
         return val1 != val2        
 
-    def filter(self, contract, addr = None, fromBlock = None, toBlock = None):
-        event_filt = contract.events.Swap.create_filter(fromBlock=fromBlock, toBlock=toBlock)
-        return event_filt
+    def filter(self, contract, addr = None, fromBlock = None, toBlock = None, argument_filters = None):
+        # Curve names its swap event TokenExchange; Uniswap and Balancer both use Swap.
+        # Balancer scopes to one pool via argument_filters={'poolId': <bytes32>};
+        # Uniswap/Curve pass no argument_filters (events are per-pool already).
+        event_names = {e.get('name') for e in contract.abi if e.get('type') == 'event'}
+        evt = contract.events.TokenExchange if 'TokenExchange' in event_names else contract.events.Swap
+        if argument_filters:
+            return evt.get_logs(fromBlock = fromBlock, toBlock = toBlock, argument_filters = argument_filters)
+        return evt.get_logs(fromBlock = fromBlock, toBlock = toBlock)

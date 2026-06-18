@@ -9,8 +9,10 @@ reads, and reorg-aware block monitoring — behind a small, stable API (`ABILoad
 
 ## What it does
 
-- **Events** — retrieve Swap, Mint, Sync, Burn, Transfer, and Create events from
-  Uniswap V2 / V3 (and forks such as Sushi) via `RetrieveEvents` / `ReadEvents`.
+- **Events** — retrieve swaps and liquidity events via `RetrieveEvents`:
+  Uniswap V2 / V3 and forks like Sushi (Swap, Mint, Sync, Burn, Transfer,
+  Create), Balancer V2 (Vault `Swap` / `PoolBalanceChanged`), and Curve
+  (`TokenExchange` / `AddLiquidity` / `RemoveLiquidity`).
 - **State reads** — Uniswap V2 pair reserves and metadata (`FetchPairDetails`),
   plus bundled read ABIs for Balancer (V2 `Vault` / `WeightedPool`) and Curve
   (`StableSwap`) pool state.
@@ -259,6 +261,66 @@ for i in range(3):
 
 > Output values above are illustrative; the addresses (Balancer V2 Vault, Curve
 > 3pool, DAI/USDC/USDT) are the canonical Ethereum mainnet contracts.
+
+## Balancer & Curve Events (Ethereum) Example
+
+`RetrieveEvents(...).apply(EventType.X, address=...)` reads swaps and liquidity
+events for Balancer and Curve — the same call used for Uniswap. `apply()` returns
+one generic record per event — `{blockNumber, event, address, transactionHash, …,
+args}` — where `args` holds the decoded event fields.
+
+**Curve** events are emitted by the pool:
+
+```
+from web3scout import *
+
+connect = ConnectW3("https://eth.llamarpc.com")   # any Ethereum mainnet RPC
+connect.apply()
+
+pool = "0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7"   # Curve 3pool
+rEvents = RetrieveEvents(connect, ABILoad(Platform.CURVE, JSONContract.CurveStableSwap))
+last = rEvents.latest_block()
+
+swaps = rEvents.apply(EventType.SWAP,             address=pool, start_block=last-50,  end_block=last)
+adds  = rEvents.apply(EventType.ADD_LIQUIDITY,    address=pool, start_block=last-500, end_block=last)
+rems  = rEvents.apply(EventType.REMOVE_LIQUIDITY, address=pool, start_block=last-500, end_block=last)
+```
+
+```javascript
+{0: {'blockNumber': 20850123,
+  'event': 'TokenExchange',
+  'address': '0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7',
+  'transactionHash': '0x…',
+  'logIndex': 71,
+  'args': {'buyer': '0x…', 'sold_id': 1, 'tokens_sold': 250000000000,
+           'bought_id': 2, 'tokens_bought': 249981044}}}
+```
+
+**Balancer** events live on the canonical Vault, keyed by `poolId` — pass the Vault
+address (`Addr.BALANCER_V2_VAULT`) and scope to one pool with `argument_filters`:
+
+```
+w3 = connect.get_w3()
+pool_id = ABILoad(Platform.BALANCER, JSONContract.BalancerWeightedPool) \
+    .apply(w3, "0x5c6Ee304399DBdB9C8Ef030aB642B10820DB8F56").functions.getPoolId().call()
+
+rEvents = RetrieveEvents(connect, ABILoad(Platform.BALANCER, JSONContract.BalancerVault))
+last = rEvents.latest_block()
+
+# one pool's swaps (omit argument_filters to read every pool's swaps)
+swaps = rEvents.apply(EventType.SWAP, address=Addr.BALANCER_V2_VAULT,
+                      argument_filters={'poolId': pool_id},
+                      start_block=last-50, end_block=last)
+
+# joins + exits: Balancer emits a single PoolBalanceChanged; the sign of the
+# `deltas` array distinguishes add (>0) from remove (<0)
+liq = rEvents.apply(EventType.POOL_BALANCE_CHANGED, address=Addr.BALANCER_V2_VAULT,
+                    argument_filters={'poolId': pool_id},
+                    start_block=last-500, end_block=last)
+```
+
+> The bundled Curve liquidity ABIs (`AddLiquidity` / `RemoveLiquidity`) are sized
+> for 3-coin pools (e.g. 3pool); swap reads work for any plain pool.
 
 ## Sushi Uniswap V2: Polygon 
 

@@ -15,15 +15,8 @@
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
-class EventTypeEnum:
+class AddressesEnum:
 
-    MINT: str = "mint"
-    SWAP: str = "swap"
-    BURN: str = "burn"
-    SYNC: str = "sync"
-    TRANSFER: str = "transfer"
-    CREATE: str = "create"
-    POOL_BALANCE_CHANGED: str = "pool_balance_changed"
-    ADD_LIQUIDITY: str = "add_liquidity"
-    REMOVE_LIQUIDITY: str = "remove_liquidity"
-
+    # Balancer V2 Vault — deterministic singleton, same address on every
+    # chain Balancer V2 is deployed to (Ethereum, Polygon, Arbitrum, …).
+    BALANCER_V2_VAULT: str = "0xBA12222222228d8Ba445958a75a0704d566BF2C8"

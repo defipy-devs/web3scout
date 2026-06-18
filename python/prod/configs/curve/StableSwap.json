@@ -3,7 +3,10 @@
     {"name": "A", "inputs": [], "outputs": [{"name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"},
     {"name": "coins", "inputs": [{"name": "i", "type": "uint256"}], "outputs": [{"name": "", "type": "address"}], "stateMutability": "view", "type": "function"},
     {"name": "balances", "inputs": [{"name": "i", "type": "uint256"}], "outputs": [{"name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"},
-    {"name": "fee", "inputs": [], "outputs": [{"name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"}
+    {"name": "fee", "inputs": [], "outputs": [{"name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"},
+    {"name": "TokenExchange", "anonymous": false, "type": "event", "inputs": [{"indexed": true, "name": "buyer", "type": "address"}, {"indexed": false, "name": "sold_id", "type": "int128"}, {"indexed": false, "name": "tokens_sold", "type": "uint256"}, {"indexed": false, "name": "bought_id", "type": "int128"}, {"indexed": false, "name": "tokens_bought", "type": "uint256"}]},
+    {"name": "AddLiquidity", "anonymous": false, "type": "event", "inputs": [{"indexed": true, "name": "provider", "type": "address"}, {"indexed": false, "name": "token_amounts", "type": "uint256[3]"}, {"indexed": false, "name": "fees", "type": "uint256[3]"}, {"indexed": false, "name": "invariant", "type": "uint256"}, {"indexed": false, "name": "token_supply", "type": "uint256"}]},
+    {"name": "RemoveLiquidity", "anonymous": false, "type": "event", "inputs": [{"indexed": true, "name": "provider", "type": "address"}, {"indexed": false, "name": "token_amounts", "type": "uint256[3]"}, {"indexed": false, "name": "fees", "type": "uint256[3]"}, {"indexed": false, "name": "token_supply", "type": "uint256"}]}
   ],
   "bytecode": ""
 }

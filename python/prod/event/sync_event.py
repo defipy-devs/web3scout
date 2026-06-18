@@ -88,5 +88,5 @@ class SyncEvent(Event):
         return event_record     
      
     def filter(self, contract, addr = None, fromBlock = None, toBlock = None):
-        event_filt = contract.events.Sync.create_filter(fromBlock=fromBlock, toBlock=toBlock)
+        event_filt = contract.events.Sync.get_logs(fromBlock=fromBlock, toBlock=toBlock)
         return event_filt

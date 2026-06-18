@@ -25,6 +25,9 @@ class JSONContractsEnum:
     UniswapV3Factory: str = "UniswapV3Factory"
     UniV2IndexedYieldLinearExitPool: str = "UniV2IndexedYieldLinearExitPool"
     MintableRCIndexedYieldLinearExitPoolStudy: str = "MintableRCIndexedYieldLinearExitPoolStudy"
+    BalancerVault: str = "Vault"
+    BalancerWeightedPool: str = "WeightedPool"
+    CurveStableSwap: str = "StableSwap"
 
 
 

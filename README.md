@@ -2,6 +2,25 @@
 
 🔗 SPDX-Anchor: [anchorregistry.ai/AR-2026-5RJKqw5](https://anchorregistry.ai/AR-2026-5RJKqw5)
 
+Web3Scout pulls onchain DeFi data from EVM chains — event retrieval, pool state
+reads, and reorg-aware block monitoring — behind a small, stable API (`ABILoad`,
+`ConnectW3`, `RetrieveEvents`, `FetchToken`). As of v1 it stands on its own (no
+`eth_defi` dependency) and is the substrate DeFiPy — and anyone else — builds on.
+
+## What it does
+
+- **Events** — retrieve Swap, Mint, Sync, Burn, Transfer, and Create events from
+  Uniswap V2 / V3 (and forks such as Sushi) via `RetrieveEvents` / `ReadEvents`.
+- **State reads** — Uniswap V2 pair reserves and metadata (`FetchPairDetails`),
+  plus bundled read ABIs for Balancer (V2 `Vault` / `WeightedPool`) and Curve
+  (`StableSwap`) pool state.
+- **Multi-protocol ABIs** — Uniswap V2/V3, Sushi, Balancer, Curve, and ERC-20
+  ABIs resolvable through one `ABILoad(Platform.X, JSONContract.Y)` interface.
+- **Reorg-aware monitoring** — detect and resolve chain reorganizations with
+  `ReorganizationMonitor` / `JSONRPCReorganizationMonitor`.
+- **Token metadata** — fetch ERC-20 details (symbol, decimals, …) with
+  `FetchToken`.
+
 ## Installation 
 ```
 > git clone https://github.com/defipy-devs/web3scout
@@ -152,6 +171,18 @@ dict_events
    'amount1': 29656680135133456015}}}
 ```
 
+
+## Protocol Coverage
+
+Beyond the Uniswap V2/V3 event examples above, Web3Scout bundles minimal, address-based read ABIs for additional protocols, resolvable through the same `ABILoad` interface:
+
+- **Balancer** — V2 `Vault` and `WeightedPool`:
+  `ABILoad(Platform.BALANCER, JSONContract.BalancerVault)` and
+  `ABILoad(Platform.BALANCER, JSONContract.BalancerWeightedPool)`
+- **Curve** — plain `StableSwap`:
+  `ABILoad(Platform.CURVE, JSONContract.CurveStableSwap)`
+
+These cover onchain state reads (pool tokens, balances, normalized weights, swap fee, amplification coefficient).
 
 ## Sushi Uniswap V2: Polygon 
 

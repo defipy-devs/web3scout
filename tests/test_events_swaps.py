@@ -57,7 +57,7 @@ class _FakeEvent:
     def __init__(self, name):
         self.name = name
         self.captured = None
-    def create_filter(self, **kwargs):
+    def get_logs(self, **kwargs):
         self.captured = kwargs
         return kwargs
 

@@ -28,5 +28,5 @@ class AddLiquidityEvent(Event):
 
     def filter(self, contract, addr = None, fromBlock = None, toBlock = None, argument_filters = None):
         if argument_filters:
-            return contract.events.AddLiquidity.create_filter(fromBlock = fromBlock, toBlock = toBlock, argument_filters = argument_filters)
-        return contract.events.AddLiquidity.create_filter(fromBlock = fromBlock, toBlock = toBlock)
+            return contract.events.AddLiquidity.get_logs(fromBlock = fromBlock, toBlock = toBlock, argument_filters = argument_filters)
+        return contract.events.AddLiquidity.get_logs(fromBlock = fromBlock, toBlock = toBlock)

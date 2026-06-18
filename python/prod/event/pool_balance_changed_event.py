@@ -28,5 +28,5 @@ class PoolBalanceChangedEvent(Event):
 
     def filter(self, contract, addr = None, fromBlock = None, toBlock = None, argument_filters = None):
         if argument_filters:
-            return contract.events.PoolBalanceChanged.create_filter(fromBlock = fromBlock, toBlock = toBlock, argument_filters = argument_filters)
-        return contract.events.PoolBalanceChanged.create_filter(fromBlock = fromBlock, toBlock = toBlock)
+            return contract.events.PoolBalanceChanged.get_logs(fromBlock = fromBlock, toBlock = toBlock, argument_filters = argument_filters)
+        return contract.events.PoolBalanceChanged.get_logs(fromBlock = fromBlock, toBlock = toBlock)

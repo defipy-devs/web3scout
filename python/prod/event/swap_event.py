@@ -111,5 +111,5 @@ class SwapEvent(Event):
         event_names = {e.get('name') for e in contract.abi if e.get('type') == 'event'}
         evt = contract.events.TokenExchange if 'TokenExchange' in event_names else contract.events.Swap
         if argument_filters:
-            return evt.create_filter(fromBlock = fromBlock, toBlock = toBlock, argument_filters = argument_filters)
-        return evt.create_filter(fromBlock = fromBlock, toBlock = toBlock)
+            return evt.get_logs(fromBlock = fromBlock, toBlock = toBlock, argument_filters = argument_filters)
+        return evt.get_logs(fromBlock = fromBlock, toBlock = toBlock)

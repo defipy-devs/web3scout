@@ -53,11 +53,12 @@ class RetrieveEvents:
     def gen_read_events(self, event, start_block = None, end_block = None, argument_filters = None):
         s_block = 1 if start_block == None else start_block
         e_block = self.latest_block() if end_block == None else end_block
+        # event.filter() returns decoded logs via stateless eth_getLogs, which
+        # works on load-balanced public RPCs (unlike stateful eth_newFilter).
         if argument_filters is not None:
-            event_filt = event.filter(self.__contract, fromBlock=s_block, toBlock=e_block, argument_filters=argument_filters)
+            read_events = event.filter(self.__contract, fromBlock=s_block, toBlock=e_block, argument_filters=argument_filters)
         else:
-            event_filt = event.filter(self.__contract, fromBlock=s_block, toBlock=e_block)
-        read_events = event_filt.get_all_entries()
+            read_events = event.filter(self.__contract, fromBlock=s_block, toBlock=e_block)
         return read_events
 
     def reorg_event_record(self,evt):
